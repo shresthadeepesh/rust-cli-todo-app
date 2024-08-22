@@ -25,10 +25,30 @@ pub struct Todo {
 }
 
 pub struct TodoApp {
-    pub todos: Vec<Todo>,
+    todos: Vec<Todo>,
 }
 
 impl TodoApp {
+    pub fn new() -> Self {
+        TodoApp { todos: Vec::new() }
+    }
+
+    pub fn add_todo(&mut self, todo: Todo) {
+        self.todos.push(todo);
+    }
+
+    pub fn todos_len(&self) -> usize {
+        self.todos.len()
+    }
+
+    pub fn generate_id(&self) -> usize {
+        if let Some(max_id) = self.todos.iter().map(|todo| todo.id).max() {
+            max_id + 1
+        } else {
+            1
+        }
+    }
+
     pub fn insert_todo(&mut self) {
         println!("Enter the todo list: ");
 
@@ -38,7 +58,7 @@ impl TodoApp {
             .expect("Failed to read line.");
 
         let todo = Todo {
-            id: self.todos.len() + 1,
+            id: self.generate_id(),
             title: todo_input,
             status: Status::Draft,
         };
@@ -57,7 +77,10 @@ impl TodoApp {
 
         let todo_input: usize = match todo_input.trim().parse() {
             Ok(num) => num,
-            Err(_) => 0,
+            Err(_) => {
+                println!("Invalid ID entered.");
+                return;
+            }
         };
 
         if let Some(item) = self.todos.iter_mut().find(|item| item.id == todo_input) {
@@ -86,7 +109,10 @@ impl TodoApp {
 
         let todo_input: usize = match todo_input.trim().parse() {
             Ok(num) => num,
-            Err(_) => 0,
+            Err(_) => {
+                println!("Invalid ID entered.");
+                return;
+            }
         };
 
         if let Some(pos) = self.todos.iter().position(|item| item.id == todo_input) {
@@ -101,5 +127,17 @@ impl TodoApp {
 
     pub fn list_todos(&self) {
         assert!(print_stdout(self.todos.with_title()).is_ok());
+    }
+
+    pub fn seed_todos(&mut self) {
+        for i in 1..10 {
+            let todo = Todo {
+                id: i,
+                title: format!("Todo list {}", i),
+                status: Status::Draft,
+            };
+
+            self.add_todo(todo);
+        }
     }
 }

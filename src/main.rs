@@ -3,19 +3,12 @@ pub mod todo;
 
 use menu::{display_menu, Choice};
 use std::io;
-use todo::{Status, Todo, TodoApp};
+use todo::TodoApp;
 
 fn main() {
-    let mut todo_app = TodoApp { todos: vec![] };
+    let mut todo_app = TodoApp::new();
 
-    let todo = Todo {
-        id: &todo_app.todos.len() + 1,
-        title: String::from("Todo list 1"),
-        status: Status::Completed,
-    };
-
-    todo_app.todos.push(todo);
-
+    todo_app.seed_todos();
     display_menu();
 
     loop {
@@ -35,10 +28,10 @@ fn main() {
                     println!("Exiting from the program...");
                     break;
                 }
-                Choice::Insert => TodoApp::insert_todo(&mut todo_app),
-                Choice::Update => TodoApp::update_todo(&mut todo_app),
-                Choice::Delete => TodoApp::delete_todo(&mut todo_app),
-                Choice::List => TodoApp::list_todos(&todo_app),
+                Choice::Insert => todo_app.insert_todo(),
+                Choice::Update => todo_app.update_todo(),
+                Choice::Delete => todo_app.delete_todo(),
+                Choice::List => todo_app.list_todos(),
                 Choice::DisplayMenu => display_menu(),
             },
             Err(e) => println!("Error: {}", e),
