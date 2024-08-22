@@ -1,0 +1,8 @@
+[package]
+name = "basics"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+cli-table = "0.4.9"
+rand = "0.8.5"
