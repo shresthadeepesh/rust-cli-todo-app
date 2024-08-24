@@ -1,6 +1,9 @@
 use cli_table::{print_stdout, Table, WithTitle};
 use core::fmt;
-use std::io;
+use std::{
+    fs::File,
+    io::{self, Write},
+};
 
 #[derive(Debug)]
 pub enum Status {
@@ -119,10 +122,7 @@ impl TodoApp {
             self.todos.remove(pos);
         }
 
-        println!(
-            "The selected todo's {} status has been deleted.",
-            todo_input
-        );
+        println!("The selected todo's {} has been deleted.", todo_input);
     }
 
     pub fn list_todos(&self) {
@@ -138,6 +138,30 @@ impl TodoApp {
             };
 
             self.add_todo(todo);
+        }
+    }
+
+    pub fn export_to_csv(&self) {
+        let mut csv_str = String::from("ID,Title,Status\n");
+
+        for todo in &self.todos {
+            let todo_str = format!("{},{},{}\n", todo.id, todo.title, todo.status);
+            csv_str.push_str(&todo_str);
+        }
+
+        println!("Exporting the following list of todos.");
+        println!("{}", csv_str);
+
+        let mut file = match File::create("todos.csv") {
+            Ok(f) => f,
+            Err(e) => {
+                eprintln!("Failed to create a file: {}", e);
+                return;
+            }
+        };
+
+        if let Err(e) = file.write_all(csv_str.as_bytes()) {
+            eprintln!("Failed to write to file: {}", e);
         }
     }
 }

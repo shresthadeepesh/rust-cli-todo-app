@@ -33,6 +33,7 @@ fn main() {
                 Choice::Delete => todo_app.delete_todo(),
                 Choice::List => todo_app.list_todos(),
                 Choice::DisplayMenu => display_menu(),
+                Choice::ExportToCsv => todo_app.export_to_csv(),
             },
             Err(e) => println!("Error: {}", e),
         }

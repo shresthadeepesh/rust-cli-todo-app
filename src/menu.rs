@@ -5,6 +5,7 @@ pub fn display_menu() {
     println!("3. Press for delete a todo from the list.");
     println!("4. Press for view todo list.");
     println!("5. Press for view the menu.");
+    println!("6. Press for export to csv.");
 }
 
 #[derive(Debug)]
@@ -15,6 +16,7 @@ pub enum Choice {
     Delete = 3,
     List = 4,
     DisplayMenu = 5,
+    ExportToCsv = 6,
 }
 
 impl TryFrom<u8> for Choice {
@@ -28,6 +30,7 @@ impl TryFrom<u8> for Choice {
             3 => Ok(Choice::Delete),
             4 => Ok(Choice::List),
             5 => Ok(Choice::DisplayMenu),
+            6 => Ok(Choice::ExportToCsv),
             _ => Err(format!("Invalid value: {}", value)),
         }
     }
