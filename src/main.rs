@@ -1,41 +1,44 @@
-pub mod menu;
-pub mod todo;
+use std::{sync::mpsc, thread, time::Duration};
 
-use menu::{display_menu, Choice};
-use std::io;
-use todo::TodoApp;
+pub mod todo_app;
 
 fn main() {
-    let mut todo_app = TodoApp::new();
+    todo_app::todo_app();
 
-    todo_app.seed_todos();
-    display_menu();
+    // let (tx, rx) = mpsc::channel();
 
-    loop {
-        let mut buff = String::new();
-        io::stdin()
-            .read_line(&mut buff)
-            .expect("Failed to read line.");
+    // let tx1 = tx.clone();
+    // thread::spawn(move || {
+    //     let txt = vec![
+    //         String::from("Hello World! 1"),
+    //         String::from("Hello World! 2"),
+    //         String::from("Hello World! 3"),
+    //         String::from("Hello World! 4"),
+    //         String::from("Hello World! 5"),
+    //     ];
 
-        let buff: u8 = match buff.trim().parse() {
-            Ok(num) => num,
-            Err(_) => continue,
-        };
+    //     for text in txt {
+    //         tx1.send(text).unwrap();
+    //         thread::sleep(Duration::from_secs(2));
+    //     }
+    // });
 
-        match Choice::try_from(buff) {
-            Ok(value) => match value {
-                Choice::Exit => {
-                    println!("Exiting from the program...");
-                    break;
-                }
-                Choice::Insert => todo_app.insert_todo(),
-                Choice::Update => todo_app.update_todo(),
-                Choice::Delete => todo_app.delete_todo(),
-                Choice::List => todo_app.list_todos(),
-                Choice::DisplayMenu => display_menu(),
-                Choice::ExportToCsv => todo_app.export_to_csv(),
-            },
-            Err(e) => println!("Error: {}", e),
-        }
-    }
+    // thread::spawn(move || {
+    //     let txt = vec![
+    //         String::from("Hello World! 11"),
+    //         String::from("Hello World! 22"),
+    //         String::from("Hello World! 33"),
+    //         String::from("Hello World! 44"),
+    //         String::from("Hello World! 55"),
+    //     ];
+
+    //     for text in txt {
+    //         tx.send(text).unwrap();
+    //         thread::sleep(Duration::from_secs(2));
+    //     }
+    // });
+
+    // for received in rx {
+    //     println!("Got: {received}");
+    // }
 }
