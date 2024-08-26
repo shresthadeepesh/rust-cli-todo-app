@@ -9,6 +9,7 @@ pub fn display_menu() {
     println!("7. Press for view todo list.");
     println!("8. Press for export to csv.");
     println!("9. Seed todos.");
+    println!("10. Load todos from file.");
 }
 
 #[derive(Debug)]
@@ -23,6 +24,7 @@ pub enum Choice {
     List,
     ExportToCsv,
     SeedTodo,
+    LoadFromFile,
 }
 
 impl TryFrom<u8> for Choice {
@@ -40,6 +42,7 @@ impl TryFrom<u8> for Choice {
             7 => Ok(Choice::List),
             8 => Ok(Choice::ExportToCsv),
             9 => Ok(Choice::SeedTodo),
+            10 => Ok(Choice::LoadFromFile),
             _ => Err(format!("Invalid value: {}", value)),
         }
     }

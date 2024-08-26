@@ -1,8 +1,8 @@
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, NaiveDateTime, Utc};
 use cli_table::{format::Justify, Cell, Style, Table};
 use core::fmt;
 use std::{
-    fs::File,
+    fs::{read_to_string, File},
     io::{self, Write},
 };
 
@@ -63,7 +63,7 @@ impl TodoApp {
 
         let todo = Todo {
             id: self.generate_id(),
-            title: todo_input,
+            title: todo_input.trim().to_string(),
             status: Status::Draft,
             created_at: Utc::now(),
             updated_at: Utc::now(),
@@ -272,6 +272,38 @@ impl TodoApp {
 
         if let Err(e) = file.write_all(csv_str.as_bytes()) {
             eprintln!("Failed to write to file: {}", e);
+        }
+    }
+
+    pub fn load_from_file(&mut self) {
+        let todos: Vec<Todo> = read_to_string("todos.csv")
+            .unwrap()
+            .lines()
+            .skip(1)
+            .map(|line| {
+                let fields: Vec<&str> = line.split(",").collect();
+                Todo {
+                    id: fields[0].parse().unwrap_or_default(),
+                    title: fields[1].to_string(),
+                    status: if fields[2].to_string() == "Draft" {
+                        Status::Draft
+                    } else {
+                        Status::Completed
+                    },
+                    created_at: fields[3].parse::<DateTime<Utc>>().unwrap(),
+                    updated_at: fields[4].parse::<DateTime<Utc>>().unwrap(),
+                    deleted_at: if !fields[5].is_empty() {
+                        Some(fields[4].parse::<DateTime<Utc>>().unwrap())
+                    } else {
+                        None
+                    },
+                }
+            })
+            .collect();
+
+        if todos.len() > 0 {
+            self.todos = todos;
+            println!("Todos loaded from the file.");
         }
     }
 }

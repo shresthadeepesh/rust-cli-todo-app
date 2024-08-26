@@ -41,6 +41,7 @@ pub fn todo_app() {
                 Choice::DisplayMenu => display_menu(),
                 Choice::ExportToCsv => todo_app.export_to_csv(),
                 Choice::SeedTodo => todo_app.seed_todos(),
+                Choice::LoadFromFile => todo_app.load_from_file(),
             },
             Err(e) => println!("Error: {}", e),
         }
