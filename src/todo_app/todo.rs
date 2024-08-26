@@ -28,24 +28,40 @@ pub struct Todo {
     pub deleted_at: Option<DateTime<Utc>>,
 }
 
+pub trait ITodoApp {
+    fn new() -> Self;
+    fn add_todo(&mut self, todo: Todo);
+    fn todos_len(&self);
+    fn generate_id(&self) -> usize;
+    fn insert_todo(&mut self);
+    fn update_todo(&mut self);
+    fn soft_delete_todo(&mut self);
+    fn restore_todo(&mut self);
+    fn delete_todo(&mut self);
+    fn list_todos(&self);
+    fn seed_todos(&mut self);
+    fn export_to_csv(&self);
+    fn load_from_file(&mut self);
+}
+
 pub struct TodoApp {
     todos: Vec<Todo>,
 }
 
-impl TodoApp {
-    pub fn new() -> Self {
+impl ITodoApp for TodoApp {
+    fn new() -> Self {
         TodoApp { todos: Vec::new() }
     }
 
-    pub fn add_todo(&mut self, todo: Todo) {
+    fn add_todo(&mut self, todo: Todo) {
         self.todos.push(todo);
     }
 
-    pub fn todos_len(&self) -> usize {
-        self.todos.len()
+    fn todos_len(&self) {
+        println!("{}", self.todos.len());
     }
 
-    pub fn generate_id(&self) -> usize {
+    fn generate_id(&self) -> usize {
         if let Some(max_id) = self.todos.iter().map(|todo| todo.id).max() {
             max_id + 1
         } else {
@@ -53,7 +69,7 @@ impl TodoApp {
         }
     }
 
-    pub fn insert_todo(&mut self) {
+    fn insert_todo(&mut self) {
         println!("Enter the todo list: ");
 
         let mut todo_input = String::new();
@@ -75,7 +91,7 @@ impl TodoApp {
         println!("The todo has been added to the list.");
     }
 
-    pub fn update_todo(&mut self) {
+    fn update_todo(&mut self) {
         println!("Enter the id of the todo to update: ");
         let mut todo_input = String::new();
         io::stdin()
@@ -107,7 +123,7 @@ impl TodoApp {
         );
     }
 
-    pub fn soft_delete_todo(&mut self) {
+    fn soft_delete_todo(&mut self) {
         println!("Enter the id of the todo to remove: ");
         let mut todo_input = String::new();
         io::stdin()
@@ -130,7 +146,7 @@ impl TodoApp {
         }
     }
 
-    pub fn restore_todo(&mut self) {
+    fn restore_todo(&mut self) {
         println!("Enter the id of the todo to restore: ");
         let mut todo_input = String::new();
         io::stdin()
@@ -153,7 +169,7 @@ impl TodoApp {
         }
     }
 
-    pub fn delete_todo(&mut self) {
+    fn delete_todo(&mut self) {
         println!("Enter the id of the todo to remove: ");
         let mut todo_input = String::new();
         io::stdin()
@@ -176,7 +192,7 @@ impl TodoApp {
         }
     }
 
-    pub fn list_todos(&self) {
+    fn list_todos(&self) {
         let rows = self
             .todos
             .iter()
@@ -209,7 +225,7 @@ impl TodoApp {
         println!("{}", table_display);
     }
 
-    pub fn seed_todos(&mut self) {
+    fn seed_todos(&mut self) {
         println!("Enter the number of todos to be seeded: ");
         let mut num_todo = String::new();
         io::stdin()
@@ -240,7 +256,7 @@ impl TodoApp {
         println!("Todo seeded successfully.");
     }
 
-    pub fn export_to_csv(&self) {
+    fn export_to_csv(&self) {
         let mut csv_str = String::from("ID,Title,Status,CreatedAt,UpdatedAt,DeletedAt\n");
 
         for todo in &self.todos {
@@ -275,7 +291,7 @@ impl TodoApp {
         }
     }
 
-    pub fn load_from_file(&mut self) {
+    fn load_from_file(&mut self) {
         let todos: Vec<Todo> = read_to_string("todos.csv")
             .unwrap()
             .lines()

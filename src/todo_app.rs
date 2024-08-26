@@ -3,7 +3,7 @@ pub mod todo;
 
 use menu::{display_menu, Choice};
 use std::io;
-use todo::TodoApp;
+use todo::{ITodoApp, TodoApp};
 
 pub fn todo_app() {
     let mut todo_app = TodoApp::new();
@@ -42,6 +42,7 @@ pub fn todo_app() {
                 Choice::ExportToCsv => todo_app.export_to_csv(),
                 Choice::SeedTodo => todo_app.seed_todos(),
                 Choice::LoadFromFile => todo_app.load_from_file(),
+                Choice::CountTodo => todo_app.todos_len(),
             },
             Err(e) => println!("Error: {}", e),
         }
